@@ -1,0 +1,498 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FinancialAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #F0D98A;
+    --gold-dark: #8B6914;
+    --dark: #0A0C10;
+    --dark2: #111318;
+    --dark3: #181C24;
+    --dark4: #1E2330;
+    --border: rgba(201,168,76,0.18);
+    --border-soft: rgba(255,255,255,0.06);
+    --text: #F0EDE6;
+    --text-muted: #8A8880;
+    --text-dim: #4A4845;
+    --green: #22C55E;
+    --red: #EF4444;
+    --radius: 14px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 40px;
+    border-bottom: 0.5px solid var(--border);
+    background: rgba(10,12,16,0.95);
+    backdrop-filter: blur(12px);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 22px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+  }
+  .logo span { -webkit-text-fill-color: var(--text); opacity: 0.4; font-weight: 400; }
+  nav .nav-right { display: flex; gap: 10px; align-items: center; }
+  .btn-outline {
+    border: 0.5px solid var(--border); background: transparent;
+    color: var(--text-muted); padding: 8px 18px; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    border: none; color: #0A0C10; padding: 8px 20px; border-radius: 8px;
+    font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .btn-gold:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    padding: 80px 40px 60px;
+    max-width: 900px; margin: 0 auto; text-align: center;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    border: 0.5px solid var(--border); border-radius: 20px;
+    padding: 5px 14px; font-size: 12px; color: var(--gold);
+    background: rgba(201,168,76,0.06); margin-bottom: 28px;
+    font-family: 'DM Sans', sans-serif; letter-spacing: 0.3px;
+  }
+  .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); display: inline-block; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -1.5px; margin-bottom: 20px;
+    color: var(--text);
+  }
+  h1 em {
+    font-style: normal;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .subtitle {
+    font-size: 17px; color: var(--text-muted); max-width: 560px;
+    margin: 0 auto 48px; line-height: 1.65; font-weight: 300;
+  }
+
+  /* MAIN INPUT CARD */
+  .query-card {
+    background: var(--dark3);
+    border: 0.5px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    max-width: 780px; margin: 0 auto 48px;
+    box-shadow: 0 0 60px rgba(201,168,76,0.04);
+  }
+  .selectors {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px;
+  }
+  .field-label {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-dim); margin-bottom: 7px;
+    font-family: 'Syne', sans-serif; font-weight: 600;
+  }
+  select, input[type="text"] {
+    width: 100%; background: var(--dark4);
+    border: 0.5px solid rgba(255,255,255,0.08);
+    color: var(--text); padding: 11px 14px; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    outline: none; appearance: none; cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  select:focus, input[type="text"]:focus {
+    border-color: rgba(201,168,76,0.4);
+  }
+  select option { background: var(--dark3); }
+
+  .question-row {
+    display: flex; gap: 10px; align-items: flex-end;
+  }
+  .question-row .field { flex: 1; }
+  .question-row input[type="text"] {
+    padding: 13px 16px; font-size: 15px;
+    border: 0.5px solid rgba(255,255,255,0.1);
+  }
+  .question-row input::placeholder { color: var(--text-dim); }
+  .ask-btn {
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    border: none; color: #0A0C10;
+    padding: 13px 24px; border-radius: 10px;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px;
+    cursor: pointer; white-space: nowrap; transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ask-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+  .ask-btn svg { width: 16px; height: 16px; }
+
+  /* TAGS */
+  .suggested-tags {
+    display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px;
+  }
+  .tag {
+    border: 0.5px solid var(--border-soft); border-radius: 20px;
+    padding: 5px 13px; font-size: 12px; color: var(--text-muted);
+    cursor: pointer; transition: all 0.2s; background: transparent;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .tag:hover { border-color: var(--gold); color: var(--gold); background: rgba(201,168,76,0.06); }
+
+  /* RESPONSE AREA */
+  .response-area {
+    max-width: 780px; margin: 0 auto 48px;
+    display: none;
+  }
+  .response-area.visible { display: block; }
+  .response-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 18px;
+  }
+  .response-header h3 {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px;
+    color: var(--text-muted); letter-spacing: 0.5px;
+  }
+  .live-badge {
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--green);
+    font-family: 'Syne', sans-serif; font-weight: 600; letter-spacing: 0.5px;
+  }
+  .live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 1.5s infinite; }
+
+  .investment-cards {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+    margin-bottom: 18px;
+  }
+  .inv-card {
+    background: var(--dark3); border: 0.5px solid var(--border-soft);
+    border-radius: var(--radius); padding: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+  .inv-card:hover { border-color: var(--border); transform: translateY(-2px); }
+  .inv-card.highlight { border-color: rgba(201,168,76,0.3); }
+  .inv-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .inv-type { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); font-family: 'Syne', sans-serif; font-weight: 600; }
+  .return-badge {
+    font-size: 12px; font-weight: 500; padding: 3px 9px; border-radius: 6px;
+  }
+  .return-badge.green { background: rgba(34,197,94,0.12); color: var(--green); }
+  .return-badge.amber { background: rgba(201,168,76,0.12); color: var(--gold); }
+  .return-badge.red { background: rgba(239,68,68,0.1); color: var(--red); }
+  .inv-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+  .inv-desc { font-size: 13px; color: var(--text-muted); line-height: 1.55; font-weight: 300; margin-bottom: 14px; }
+  .inv-meta { display: flex; gap: 14px; }
+  .meta-item { font-size: 11px; color: var(--text-dim); }
+  .meta-item strong { color: var(--text-muted); display: block; font-size: 12px; font-weight: 500; }
+
+  /* SUMMARY BOX */
+  .summary-box {
+    background: var(--dark3); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 20px 24px;
+    font-size: 14px; line-height: 1.7; color: var(--text-muted);
+    font-weight: 300;
+  }
+  .summary-box strong { color: var(--gold); font-weight: 500; }
+
+  /* STATS ROW */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 12px;
+    max-width: 780px; margin: 0 auto 56px;
+  }
+  .stat-box {
+    background: var(--dark3); border: 0.5px solid var(--border-soft);
+    border-radius: 12px; padding: 18px; text-align: center;
+  }
+  .stat-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; color: var(--text); }
+  .stat-lbl { font-size: 11px; color: var(--text-dim); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.8px; }
+
+  /* LOADING */
+  .loading { display: none; text-align: center; padding: 40px; }
+  .loading.visible { display: block; }
+  .spinner {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: 2px solid var(--dark4); border-top-color: var(--gold);
+    animation: spin 0.8s linear infinite; margin: 0 auto 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading p { font-size: 13px; color: var(--text-dim); font-weight: 300; }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 40px; border-top: 0.5px solid var(--border-soft);
+    font-size: 12px; color: var(--text-dim);
+  }
+  footer span { color: var(--gold); }
+
+  @media (max-width: 600px) {
+    nav { padding: 14px 20px; }
+    .hero { padding: 50px 20px 40px; }
+    .query-card { padding: 20px; margin: 0 16px 32px; }
+    .selectors { grid-template-columns: 1fr; }
+    .investment-cards { grid-template-columns: 1fr; }
+    .stats-row { grid-template-columns: repeat(2,1fr); }
+    .response-area { margin: 0 16px 32px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Financial<span>/</span>AI</div>
+  <div class="nav-right">
+    <button class="btn-outline" onclick="showComingSoon('login')">Log in</button>
+    <button class="btn-gold" onclick="showComingSoon('signup')">Get started →</button>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="badge">AI-powered · Real-time market data · 150+ countries</div>
+  <h1>Invest smarter with<br/><em>AI-driven insights</em></h1>
+  <p class="subtitle">Get personalized investment ideas for any country and currency — with live data, realistic timelines, and profit projections tailored to your goals.</p>
+</section>
+
+<div class="query-card">
+  <div class="selectors">
+    <div>
+      <div class="field-label">Country & Currency</div>
+      <select id="countrySelect">
+        <option value="RW|RWF">🇷🇼 Rwanda — RWF (Rwandan Franc)</option>
+        <option value="US|USD">🇺🇸 United States — USD</option>
+        <option value="GB|GBP">🇬🇧 United Kingdom — GBP</option>
+        <option value="DE|EUR">🇩🇪 Germany — EUR</option>
+        <option value="NG|NGN">🇳🇬 Nigeria — NGN (Naira)</option>
+        <option value="KE|KES">🇰🇪 Kenya — KES (Shilling)</option>
+        <option value="ZA|ZAR">🇿🇦 South Africa — ZAR</option>
+        <option value="EG|EGP">🇪🇬 Egypt — EGP</option>
+        <option value="IN|INR">🇮🇳 India — INR</option>
+        <option value="CN|CNY">🇨🇳 China — CNY</option>
+        <option value="JP|JPY">🇯🇵 Japan — JPY</option>
+        <option value="BR|BRL">🇧🇷 Brazil — BRL</option>
+        <option value="AE|AED">🇦🇪 UAE — AED</option>
+        <option value="ET|ETB">🇪🇹 Ethiopia — ETB</option>
+        <option value="GH|GHS">🇬🇭 Ghana — GHS</option>
+        <option value="UG|UGX">🇺🇬 Uganda — UGX</option>
+        <option value="TZ|TZS">🇹🇿 Tanzania — TZS</option>
+        <option value="CA|CAD">🇨🇦 Canada — CAD</option>
+        <option value="AU|AUD">🇦🇺 Australia — AUD</option>
+        <option value="SG|SGD">🇸🇬 Singapore — SGD</option>
+      </select>
+    </div>
+    <div>
+      <div class="field-label">Investment Goal</div>
+      <select id="goalSelect">
+        <option value="grow wealth">Grow my wealth long-term</option>
+        <option value="passive income">Generate passive income</option>
+        <option value="save for a goal">Save for a specific goal</option>
+        <option value="start a business">Start or fund a business</option>
+        <option value="protect savings from inflation">Protect savings from inflation</option>
+        <option value="quick returns">Get returns within 1 year</option>
+        <option value="retire early">Retire early / financial freedom</option>
+      </select>
+    </div>
+  </div>
+  <div>
+    <div class="field-label">Your Question (optional — or just press Ask)</div>
+    <div class="question-row">
+      <div class="field">
+        <input type="text" id="userQuestion" placeholder="e.g. I have 500,000 RWF, what should I do with it?" />
+      </div>
+      <button class="ask-btn" onclick="askAI()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        Ask AI
+      </button>
+    </div>
+  </div>
+  <div class="suggested-tags">
+    <span style="font-size:11px;color:var(--text-dim);padding:5px 0;text-transform:uppercase;letter-spacing:0.8px;font-family:'Syne',sans-serif;font-weight:600;">Quick ask:</span>
+    <button class="tag" onclick="quickAsk('Best low-risk investments right now')">Best low-risk options</button>
+    <button class="tag" onclick="quickAsk('Where to invest with 100 USD or equivalent?')">Start with small capital</button>
+    <button class="tag" onclick="quickAsk('Real estate vs stocks — which is better here?')">Real estate vs stocks</button>
+    <button class="tag" onclick="quickAsk('How to beat inflation with my savings?')">Beat inflation</button>
+    <button class="tag" onclick="quickAsk('Top 3 investment opportunities in the next 6 months')">6-month outlook</button>
+  </div>
+</div>
+
+<div class="loading" id="loadingBlock">
+  <div class="spinner"></div>
+  <p id="loadingMsg">Fetching live market data and analyzing opportunities…</p>
+</div>
+
+<div class="response-area" id="responseArea">
+  <div class="response-header">
+    <h3 id="responseTitle">INVESTMENT IDEAS</h3>
+    <div class="live-badge"><div class="live-dot"></div> LIVE ANALYSIS</div>
+  </div>
+  <div class="investment-cards" id="investmentCards"></div>
+  <div class="summary-box" id="summaryBox"></div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-box"><div class="stat-num">150+</div><div class="stat-lbl">Countries covered</div></div>
+  <div class="stat-box"><div class="stat-num">Real-time</div><div class="stat-lbl">Market data</div></div>
+  <div class="stat-box"><div class="stat-num">AI</div><div class="stat-lbl">Powered analysis</div></div>
+  <div class="stat-box"><div class="stat-num">Free</div><div class="stat-lbl">No login needed</div></div>
+</div>
+
+<footer>
+  <p><span>FinancialAI</span> — AI-powered investment guidance. Not financial advice. Always consult a certified advisor for major decisions.</p>
+</footer>
+
+<script>
+const ANTHROPIC_KEY_PLACEHOLDER = 'YOUR_API_KEY';
+
+const loadingMessages = [
+  "Searching latest market conditions…",
+  "Analyzing investment opportunities…",
+  "Fetching currency and inflation data…",
+  "Calculating realistic profit timelines…",
+  "Preparing your personalized advice…"
+];
+
+function quickAsk(q) {
+  document.getElementById('userQuestion').value = q;
+  askAI();
+}
+
+function showComingSoon(type) {
+  alert(type === 'login' ? 'Login coming soon! You can explore all features without an account for now.' : 'Registration coming soon! All features are free and open for now.');
+}
+
+async function askAI() {
+  const country = document.getElementById('countrySelect').value;
+  const [countryCode, currency] = country.split('|');
+  const goal = document.getElementById('goalSelect').value;
+  const question = document.getElementById('userQuestion').value.trim();
+  const countryName = document.getElementById('countrySelect').options[document.getElementById('countrySelect').selectedIndex].text;
+
+  document.getElementById('loadingBlock').classList.add('visible');
+  document.getElementById('responseArea').classList.remove('visible');
+
+  let msgIdx = 0;
+  const msgInterval = setInterval(() => {
+    msgIdx = (msgIdx + 1) % loadingMessages.length;
+    document.getElementById('loadingMsg').textContent = loadingMessages[msgIdx];
+  }, 2000);
+
+  const systemPrompt = `You are FinancialAI, an expert investment advisor with real-time knowledge of global markets. You provide practical, country-specific investment guidance.
+
+Always respond ONLY with valid JSON, no markdown, no extra text. Format exactly:
+{
+  "title": "Short title for this analysis (max 8 words)",
+  "ideas": [
+    {
+      "type": "Investment category (e.g. Real Estate, Stocks, Crypto, Bonds, Business)",
+      "name": "Specific investment name or opportunity",
+      "description": "2-3 sentence explanation of this specific opportunity in this country/context",
+      "expectedReturn": "e.g. 8-15% annually or 2x in 3 years",
+      "timeframe": "e.g. 2-5 years",
+      "risk": "Low|Medium|High",
+      "minAmount": "Minimum realistic starting amount in local currency",
+      "highlight": true or false (true for the top pick)
+    }
+  ],
+  "summary": "2-3 sentence overall market summary for this country, mentioning current economic conditions, inflation rate if notable, and your top recommendation. Include specific numbers where known."
+}
+Provide exactly 4 investment ideas. Use real, current knowledge about ${countryName} markets, ${currency} currency, local regulations, and economic conditions as of 2025-2026. Be specific, not generic.`;
+
+  const userPrompt = question
+    ? `Country: ${countryName}, Currency: ${currency}. Goal: ${goal}. User question: ${question}. Provide 4 investment ideas tailored to this context.`
+    : `Country: ${countryName}, Currency: ${currency}. Goal: ${goal}. Provide the 4 best investment ideas for someone in this country right now.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userPrompt }]
+      })
+    });
+
+    const data = await res.json();
+    clearInterval(msgInterval);
+    document.getElementById('loadingBlock').classList.remove('visible');
+
+    let jsonText = '';
+    for (const block of data.content) {
+      if (block.type === 'text') jsonText += block.text;
+    }
+
+    jsonText = jsonText.replace(/```json|```/g, '').trim();
+    const parsed = JSON.parse(jsonText);
+    renderResponse(parsed, countryName, currency);
+
+  } catch(e) {
+    clearInterval(msgInterval);
+    document.getElementById('loadingBlock').classList.remove('visible');
+    document.getElementById('responseArea').classList.add('visible');
+    document.getElementById('investmentCards').innerHTML = '';
+    document.getElementById('summaryBox').innerHTML = `<strong>Note:</strong> Live AI analysis requires an API connection. In production, this will fetch real-time investment data for your selected country. Please check your network or API configuration.`;
+    document.getElementById('responseTitle').textContent = 'CONNECTION NEEDED';
+    console.error(e);
+  }
+}
+
+function renderResponse(data, countryName, currency) {
+  document.getElementById('responseTitle').textContent = (data.title || 'INVESTMENT IDEAS').toUpperCase();
+
+  const cardsEl = document.getElementById('investmentCards');
+  cardsEl.innerHTML = '';
+
+  (data.ideas || []).forEach(idea => {
+    const riskColor = idea.risk === 'Low' ? 'green' : idea.risk === 'High' ? 'red' : 'amber';
+    const card = document.createElement('div');
+    card.className = 'inv-card' + (idea.highlight ? ' highlight' : '');
+    card.innerHTML = `
+      <div class="inv-top">
+        <div class="inv-type">${idea.type || ''}</div>
+        <div class="return-badge ${riskColor}">${idea.risk || 'Medium'} risk</div>
+      </div>
+      <div class="inv-name">${idea.name || ''}</div>
+      <div class="inv-desc">${idea.description || ''}</div>
+      <div class="inv-meta">
+        <div class="meta-item"><strong>Return</strong>${idea.expectedReturn || 'Varies'}</div>
+        <div class="meta-item"><strong>Timeframe</strong>${idea.timeframe || 'Varies'}</div>
+        <div class="meta-item"><strong>Min. Amount</strong>${idea.minAmount || 'Varies'}</div>
+      </div>
+    `;
+    cardsEl.appendChild(card);
+  });
+
+  document.getElementById('summaryBox').innerHTML = data.summary
+    ? data.summary.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    : `Analysis for <strong>${countryName}</strong> (${currency}) complete.`;
+
+  document.getElementById('responseArea').classList.add('visible');
+}
+</script>
+</body>
+</html>
